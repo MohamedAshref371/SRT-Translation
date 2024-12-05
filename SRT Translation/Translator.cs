@@ -6,12 +6,11 @@ namespace SRT_Translation
 {
     public static class Translator
     {
+        // https://stackoverflow.com/questions/43155233
         public static async Task<string> TranslateAsync(string text, string sourceLang, string targetLang)
         {
-            // Example: Space => %20
             string escapedText = Uri.EscapeDataString(text);
 
-            // https://stackoverflow.com/questions/43155233
             string url = $"https://translate.googleapis.com/translate_a/single?client=gtx&sl={sourceLang}&tl={targetLang}&dt=t&q={escapedText}";
 
             using (HttpClient client = new HttpClient())
