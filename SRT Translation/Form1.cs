@@ -33,6 +33,7 @@ namespace SRT_Translation
             }
             
             await TranslateFile();
+            Close();
         }
 
         public async Task TranslateFile()
