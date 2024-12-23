@@ -21,9 +21,9 @@ namespace SRT_Translation
             string output;
             foreach (string s in SrtFiles)
             {
-                if (s.EndsWith(" en.srt") || s.EndsWith("_en.srt") || s.EndsWith("-en.srt"))
+                if (s.EndsWith(" en.srt") || s.EndsWith("_en.srt") || s.EndsWith("-en.srt") || s.EndsWith(".en.srt"))
                     output = s.Substring(0, s.Length - 6) + "ar.srt";
-                else if (!s.EndsWith(" ar.srt") && !s.EndsWith("_ar.srt") && !s.EndsWith("-ar.srt"))
+                else if (!s.EndsWith(" ar.srt") && !s.EndsWith("_ar.srt") && !s.EndsWith("-ar.srt") && !s.EndsWith(".ar.srt"))
                     output = s.Substring(0, s.Length - 4) + "_ar.srt";
                 else
                     continue;
