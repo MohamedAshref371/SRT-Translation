@@ -1,9 +1,6 @@
 ﻿using System;
-using System.Data;
 using System.Drawing;
 using System.IO;
-using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 
@@ -31,7 +28,7 @@ namespace SRT_Translation
                 ftc = new FileTranslationControl(s, Path.GetFileName(s), output, GetColor(flowLayoutPanel1));
                 flowLayoutPanel1.Controls.Add(ftc);
             }
-            
+
             await TranslateFile();
             Close();
         }
