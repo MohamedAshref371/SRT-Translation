@@ -1,6 +1,8 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Drawing;
 using System.IO;
+using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 
@@ -18,9 +20,11 @@ namespace SRT_Translation
             string output;
             foreach (string s in SrtFiles)
             {
-                if (s.EndsWith(" en.srt") || s.EndsWith("_en.srt") || s.EndsWith("-en.srt") || s.EndsWith(".en.srt"))
+                if (EndsWith(s, "en"))
                     output = s.Substring(0, s.Length - 6) + "ar.srt";
-                else if (!s.EndsWith(" ar.srt") && !s.EndsWith("_ar.srt") && !s.EndsWith("-ar.srt") && !s.EndsWith(".ar.srt"))
+                else if (EndsWith(s, "english"))
+                    output = s.Substring(0, s.Length - 11) + "Arabic.srt";
+                else if (!EndsWith(s, "ar") && !EndsWith(s, "arabic"))
                     output = s.Substring(0, s.Length - 4) + "_ar.srt";
                 else
                     continue;
@@ -31,6 +35,16 @@ namespace SRT_Translation
 
             await TranslateFile();
             Close();
+        }
+
+        private readonly char[] chars = { ' ', '_', '-', '.' };
+        private bool EndsWith(string s, string lang)
+        {
+            foreach (char c in chars)
+                if (s.EndsWith($"{c}{lang}.srt", StringComparison.CurrentCultureIgnoreCase))
+                    return true;
+            
+            return false;
         }
 
         public async Task TranslateFile()
@@ -50,16 +64,28 @@ namespace SRT_Translation
             }
         }
 
+        static readonly List<int> indexes = new List<int>();
+        static readonly StringBuilder collection = new StringBuilder();
         public static async Task TranslateAsync(string[] text, string sourceLang, string targetLang, FileTranslationControl ftc = null)
         {
-            string s;
+            string line; string[] lines;
             ftc.LinesCountText = text.Length;
             for (int i = 0; i < text.Length; i++)
             {
-                s = text[i];
-                if (s.Trim() != "" && !int.TryParse(s, out _) && (!s.Contains(" --> ") || !s.Contains(":") || !s.Contains(",") && !s.Contains(".")))
+                line = text[i];
+                if (line.Trim() != "" && !int.TryParse(line, out _) && (!line.Contains(" --> ") || !line.Contains(":") || !line.Contains(",") && !line.Contains(".")))
                 {
-                    text[i] = await Translator.TranslateAsync(s, sourceLang, targetLang);
+                    indexes.Add(i);
+                    collection.Append(line).Append('\n');
+                }
+                if (collection.Length > 3000 || i == text.Length - 1)
+                {
+                    lines = await Translator.TranslateAsync(collection.ToString(), sourceLang, targetLang);
+                    if (lines.Length >= indexes.Count)
+                        for (int j = 0; j < indexes.Count; j++)
+                            text[indexes[j]] = lines[j];
+                    
+                    indexes.Clear(); collection.Clear();
                     if (ftc != null) ftc.PrecentText = i;
                 }
             }

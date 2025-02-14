@@ -54,7 +54,7 @@
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedSingle;
             this.MaximizeBox = false;
             this.Name = "TranslationForm";
-            this.Text = "Translate SRT Files To Arabic By Google Translate v1.0";
+            this.Text = "Translate SRT Files To Arabic By Google Translate v1.2";
             this.Load += new System.EventHandler(this.TranslationForm_Load);
             this.ResumeLayout(false);
 
