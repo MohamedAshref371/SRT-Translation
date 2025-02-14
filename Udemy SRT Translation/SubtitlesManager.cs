@@ -75,7 +75,7 @@ namespace ChatGPT4o
                 lines.Add(index++.ToString());
                 lines.Add($"{sub.StartTime} --> {sub.EndTime}");
                 lines.Add(sub.Text);
-                lines.Add("\n");
+                lines.Add("");
             }
             return lines.ToArray();
         }
