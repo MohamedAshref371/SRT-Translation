@@ -48,6 +48,6 @@
   File.WriteAllLines(ftc.OutputFilePath, lines);
 ```
 
-follows ...
+To be continued...
 
 
