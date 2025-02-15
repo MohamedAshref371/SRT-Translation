@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Net.Http;
+using System.Text;
 using System.Threading.Tasks;
 using Newtonsoft.Json.Linq;
 
@@ -34,12 +35,28 @@ namespace SRT_Translation
         }
 
         static readonly List<string> arabicTexts = new List<string>();
+        static readonly StringBuilder sb = new StringBuilder();
         private static void GetTextFromJson(string json)
         {
             JArray data = JArray.Parse(json);
 
             foreach (var item in data[0])
-                arabicTexts.Add(item[0].ToString().Replace("\n", ""));
+            {
+                sb.Append(item[0].ToString());
+                if (sb[sb.Length - 1] == '\n')
+                {
+                    sb.Remove(sb.Length - 1, 1);
+                    arabicTexts.Add(sb.ToString());
+                    sb.Clear();
+                }
+                else if (sb[sb.Length - 1] != ' ')
+                    sb.Append(' ');
+            }
+            if (sb.Length > 0)
+            {
+                arabicTexts.Add(sb.ToString());
+                sb.Clear();
+            }
         }
     }
 }
