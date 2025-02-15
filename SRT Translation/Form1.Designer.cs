@@ -28,14 +28,8 @@
         /// </summary>
         private void InitializeComponent()
         {
-            this.folderBrowserDialog1 = new System.Windows.Forms.FolderBrowserDialog();
             this.flowLayoutPanel1 = new System.Windows.Forms.FlowLayoutPanel();
             this.SuspendLayout();
-            // 
-            // folderBrowserDialog1
-            // 
-            this.folderBrowserDialog1.Description = "إختر مجلد ملفات الترجمة\nSelect the SRT files folder";
-            this.folderBrowserDialog1.ShowNewFolderButton = false;
             // 
             // flowLayoutPanel1
             // 
@@ -61,8 +55,6 @@
         }
 
         #endregion
-
-        private System.Windows.Forms.FolderBrowserDialog folderBrowserDialog1;
         private System.Windows.Forms.FlowLayoutPanel flowLayoutPanel1;
     }
 }
