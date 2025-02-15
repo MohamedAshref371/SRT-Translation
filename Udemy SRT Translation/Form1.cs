@@ -71,6 +71,7 @@ namespace Udemy_SRT_Translation
                     lines = File.ReadAllLines(ftc.FilePath);
                     lines = ChatGPT4o.SubtitlesManager.GetMergedSubtitle(lines);
                     await TranslateAsync(lines, "en", "ar", ftc);
+                    lines = ChatGPT4o.SubtitlesManager.SplitLongLine(lines);
                     File.WriteAllLines(ftc.OutputFilePath, lines);
                     flowLayoutPanel1.Controls.Remove(ftc);
                 }
