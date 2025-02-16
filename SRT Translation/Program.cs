@@ -12,6 +12,12 @@ namespace SRT_Translation
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
 
+            if (!File.Exists("Newtonsoft.Json.dll"))
+            {
+                MessageBox.Show("Newtonsoft.Json.dll file is missing.");
+                return;
+            }
+
             FolderBrowserDialog fbd = new FolderBrowserDialog
             {
                 Description = "إختر مجلد ملفات الترجمة\nSelect the SRT files folder",
