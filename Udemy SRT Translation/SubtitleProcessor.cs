@@ -1,24 +1,23 @@
 ﻿using System.Collections.Generic;
-using System.Text;
-using System.Threading.Tasks;
 using System.Text.RegularExpressions;
-using System.Linq;
 using System;
 
 namespace ChatGPT4o
 {
     internal static class SubtitleProcessor
     {
-        static readonly Regex timePattern = new Regex(@"(\d{2}:\d{2}:\d{2}[,.]\d{3}) --> (\d{2}:\d{2}:\d{2}[,.]\d{3})");
+        private static readonly Regex timePattern = new Regex(@"(\d{2}:\d{2}:\d{2}[,.]\d{3}) --> (\d{2}:\d{2}:\d{2}[,.]\d{3})");
+        private static int thresholdMs;
 
-        public static string[] GetMergedSubtitle(string[] lines)
+        public static string[] GetMergedSubtitle(string[] lines, int _thresholdMs = 500)
         {
             var list = ReadSubtitles(lines);
+            thresholdMs = _thresholdMs;
             list = MergeSubtitles(list);
             return WriteSubtitles(list);
         }
 
-        static List<SubtitleEntry> ReadSubtitles(string[] lines)
+        private static List<SubtitleEntry> ReadSubtitles(string[] lines)
         {
             var subtitles = new List<SubtitleEntry>();
 
@@ -45,7 +44,7 @@ namespace ChatGPT4o
             return subtitles;
         }
 
-        static List<SubtitleEntry> MergeSubtitles(List<SubtitleEntry> subtitles)
+        private static List<SubtitleEntry> MergeSubtitles(List<SubtitleEntry> subtitles)
         {
             var merged = new List<SubtitleEntry>();
             SubtitleEntry current = null;
@@ -55,7 +54,7 @@ namespace ChatGPT4o
                 if (current == null) current = sub;
 
                 // تحقق مما إذا كانت الجملة السابقة تنتهي بنقطة
-                else if (IsTimeClose(current.EndTime, sub.StartTime) && !current.Text.Trim().EndsWith("."))
+                else if (IsTimeClose(current.EndTime, sub.StartTime, thresholdMs) && !current.Text.Trim().EndsWith("."))
                 {
                     current.EndTime = sub.EndTime;
                     current.Text += " " + sub.Text;
@@ -71,7 +70,7 @@ namespace ChatGPT4o
             return merged;
         }
 
-        static bool IsTimeClose(string endTime, string startTime, int thresholdMs = 100)
+        private static bool IsTimeClose(string endTime, string startTime, int thresholdMs)
         {
             TimeSpan end = TimeSpan.Parse(endTime.Replace(',', '.'));
             TimeSpan start = TimeSpan.Parse(startTime.Replace(',', '.'));
@@ -80,7 +79,7 @@ namespace ChatGPT4o
         }
 
 
-        static string[] WriteSubtitles(List<SubtitleEntry> subtitles)
+        private static string[] WriteSubtitles(List<SubtitleEntry> subtitles)
         {
             int index = 1;
             List<string> lines = new List<string>();
@@ -94,13 +93,13 @@ namespace ChatGPT4o
             return lines.ToArray();
         }
 
-        class SubtitleEntry
+        private class SubtitleEntry
         {
             public string StartTime { get; set; }
             public string EndTime { get; set; }
             public string Text { get; set; } = "";
         }
-
+        // =====================
 
         public static string[] SplitLongLine(string[] lines, int maxLength = 90)
         {
