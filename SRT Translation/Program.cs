@@ -18,6 +18,11 @@ namespace SRT_Translation
                 return;
             }
 
+            var tempForm = new Form { WindowState = FormWindowState.Maximized, TopMost = true };
+            bool isUdemy = MessageBox.Show(tempForm, "إضغط 'نعم' إذا كانت ملفات الترجمة من udemy", "Udemy ?", MessageBoxButtons.YesNo, MessageBoxIcon.Question, MessageBoxDefaultButton.Button1, MessageBoxOptions.RtlReading) == DialogResult.Yes;
+            DialogResult to_ar = MessageBox.Show(tempForm, "إضغط 'نعم' إذا اردت الترجمة إلى العربية و'لا' للإنجليزية ", "الترجمة إلى ؟", MessageBoxButtons.YesNoCancel, MessageBoxIcon.Question, MessageBoxDefaultButton.Button1, MessageBoxOptions.RtlReading);
+            tempForm.Dispose();
+
             FolderBrowserDialog fbd = new FolderBrowserDialog
             {
                 Description = "إختر مجلد ملفات الترجمة\nSelect the SRT files folder",
@@ -25,15 +30,15 @@ namespace SRT_Translation
             };
             if (fbd.ShowDialog() != DialogResult.OK) return;
 
-            var tf = new TranslationForm
-            {
-                SrtFiles = Directory.GetFiles(fbd.SelectedPath, "*.srt", SearchOption.AllDirectories)
-            };
+            var tf = new TranslationForm { IsUdemy = isUdemy };
+            if (isUdemy)
+                tf.Mp4Files = Directory.GetFiles(fbd.SelectedPath, "*.mp4", SearchOption.AllDirectories);
+            else
+                tf.SrtFiles = Directory.GetFiles(fbd.SelectedPath, "*.srt", SearchOption.AllDirectories);
 
-            var result = MessageBox.Show(new Form { WindowState = FormWindowState.Maximized, TopMost = true }, "إضغط 'نعم' إذا اردت الترجمة إلى العربية و'لا' للإنجليزية ", "الترجمة إلى ؟", MessageBoxButtons.YesNoCancel, MessageBoxIcon.Question, MessageBoxDefaultButton.Button2, MessageBoxOptions.RtlReading);
-            if (result == DialogResult.No)
+            if (to_ar == DialogResult.No)
                 tf.SwapLang();
-            if (result != DialogResult.Cancel)
+            if (to_ar != DialogResult.Cancel)
                 Application.Run(tf);
         }
     }

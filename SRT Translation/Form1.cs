@@ -10,9 +10,10 @@ namespace SRT_Translation
 {
     public partial class TranslationForm : Form
     {
-        public string[] SrtFiles;
+        public string[] SrtFiles, Mp4Files;
         string sourceLang = "en", targetLang = "ar";
         string sourceLangText = "English", targetLangText = "Arabic";
+        public bool IsUdemy;
 
         public TranslationForm() => InitializeComponent();
 
@@ -22,7 +23,7 @@ namespace SRT_Translation
             (sourceLangText, targetLangText) = (targetLangText, sourceLangText);
         }
 
-        private async void TranslationForm_Load(object sender, EventArgs e)
+        void CaptureSrtFiles()
         {
             FileTranslationControl ftc;
             string output;
@@ -40,6 +41,40 @@ namespace SRT_Translation
                 ftc = new FileTranslationControl(s, Path.GetFileName(s), output, GetColor(flowLayoutPanel1));
                 flowLayoutPanel1.Controls.Add(ftc);
             }
+        }
+
+        void CaptureSrtFilesInUdemyState()
+        {
+            FileTranslationControl ftc;
+            string input, output;
+            foreach (string s in Mp4Files)
+            {
+                if (FindSrtFile(s, targetLang, out input) || FindSrtFile(s, targetLangText, out input))
+                    continue;
+                else if (FindSrtFile(s, sourceLang, out input))
+                    output = input.Substring(0, input.Length - 6) + targetLang + ".srt";
+                else if (FindSrtFile(s, sourceLangText, out input))
+                    output = input.Substring(0, input.Length - 11) + targetLangText + ".srt";
+                else
+                {
+                    input = s.Substring(0, s.Length - 4) + ".srt";
+                    if (File.Exists(input))
+                        output = $"{input.Substring(0, input.Length - 4)}_{targetLang}.srt";
+                    else
+                        continue;
+                }
+
+                ftc = new FileTranslationControl(input, Path.GetFileName(input), output, GetColor(flowLayoutPanel1));
+                flowLayoutPanel1.Controls.Add(ftc);
+            }
+        }
+
+        private async void TranslationForm_Load(object sender, EventArgs e)
+        {
+            if (IsUdemy)
+                CaptureSrtFilesInUdemyState();
+            else
+                CaptureSrtFiles();
 
             await TranslateFile();
             Close();
@@ -54,6 +89,16 @@ namespace SRT_Translation
             
             return false;
         }
+        private bool FindSrtFile(string s, string lang, out string srtFile)
+        {
+            foreach (char c in chars)
+            {
+                srtFile = $"{s.Substring(0, s.Length - 4)}{c}{lang}.srt";
+                if (File.Exists(srtFile)) return true;
+            }
+            srtFile = "";
+            return false;
+        }
 
         public async Task TranslateFile()
         {
@@ -65,7 +110,9 @@ namespace SRT_Translation
                 if (File.Exists(ftc.FilePath))
                 {
                     lines = File.ReadAllLines(ftc.FilePath);
+                    if (IsUdemy) lines = ChatGPT4o.SubtitleProcessor.GetMergedSubtitle(lines);
                     await TranslateAsync(lines, sourceLang, targetLang, ftc);
+                    if (IsUdemy) lines = ChatGPT4o.SubtitleProcessor.SplitLongLine(lines);
                     File.WriteAllLines(ftc.OutputFilePath, lines);
                     flowLayoutPanel1.Controls.Remove(ftc);
                 }
