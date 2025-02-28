@@ -21,14 +21,14 @@ namespace SRT_Translation
             var tempForm = new Form { WindowState = FormWindowState.Maximized, TopMost = true };
             bool isUdemy = MessageBox.Show(tempForm, "إضغط 'نعم' إذا كانت ملفات الترجمة من udemy", "Udemy ?", MessageBoxButtons.YesNo, MessageBoxIcon.Question, MessageBoxDefaultButton.Button1, MessageBoxOptions.RtlReading) == DialogResult.Yes;
             bool to_ar = MessageBox.Show(tempForm, "إضغط 'نعم' إذا اردت الترجمة إلى العربية و'لا' للإنجليزية ", "الترجمة إلى ؟", MessageBoxButtons.YesNo, MessageBoxIcon.Question, MessageBoxDefaultButton.Button1, MessageBoxOptions.RtlReading) == DialogResult.Yes;
-            tempForm.Dispose();
 
             FolderBrowserDialog fbd = new FolderBrowserDialog
             {
                 Description = "إختر مجلد ملفات الترجمة\nSelect the SRT files folder",
                 ShowNewFolderButton = false
             };
-            if (fbd.ShowDialog() != DialogResult.OK) return;
+            if (fbd.ShowDialog(tempForm) != DialogResult.OK) return;
+            tempForm.Dispose();
 
             var tf = new TranslationForm { IsUdemy = isUdemy };
             if (isUdemy)
