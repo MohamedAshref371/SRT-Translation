@@ -29,7 +29,12 @@ namespace SRT_Translation
             {
                 SrtFiles = Directory.GetFiles(fbd.SelectedPath, "*.srt", SearchOption.AllDirectories)
             };
-            Application.Run(tf);
+
+            var result = MessageBox.Show(new Form { WindowState = FormWindowState.Maximized, TopMost = true }, "إضغط 'نعم' إذا اردت الترجمة إلى العربية و'لا' للإنجليزية ", "الترجمة إلى ؟", MessageBoxButtons.YesNoCancel, MessageBoxIcon.Question, MessageBoxDefaultButton.Button2, MessageBoxOptions.RtlReading);
+            if (result == DialogResult.No)
+                tf.SwapLang();
+            if (result != DialogResult.Cancel)
+                Application.Run(tf);
         }
     }
 }

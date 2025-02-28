@@ -11,8 +11,16 @@ namespace SRT_Translation
     public partial class TranslationForm : Form
     {
         public string[] SrtFiles;
+        string sourceLang = "en", targetLang = "ar";
+        string sourceLangText = "English", targetLangText = "Arabic";
 
         public TranslationForm() => InitializeComponent();
+
+        public void SwapLang()
+        {
+            (sourceLang, targetLang) = (targetLang, sourceLang);
+            (sourceLangText, targetLangText) = (targetLangText, sourceLangText);
+        }
 
         private async void TranslationForm_Load(object sender, EventArgs e)
         {
@@ -20,12 +28,12 @@ namespace SRT_Translation
             string output;
             foreach (string s in SrtFiles)
             {
-                if (EndsWith(s, "en"))
-                    output = s.Substring(0, s.Length - 6) + "ar.srt";
-                else if (EndsWith(s, "english"))
-                    output = s.Substring(0, s.Length - 11) + "Arabic.srt";
-                else if (!EndsWith(s, "ar") && !EndsWith(s, "arabic"))
-                    output = s.Substring(0, s.Length - 4) + "_ar.srt";
+                if (EndsWith(s, sourceLang))
+                    output = s.Substring(0, s.Length - 6) + targetLang + ".srt";
+                else if (EndsWith(s, sourceLangText))
+                    output = s.Substring(0, s.Length - 11) + targetLangText + ".srt";
+                else if (!EndsWith(s, targetLang) && !EndsWith(s, targetLangText))
+                    output = $"{s.Substring(0, s.Length - 4)}_{targetLang}.srt";
                 else
                     continue;
 
@@ -57,7 +65,7 @@ namespace SRT_Translation
                 if (File.Exists(ftc.FilePath))
                 {
                     lines = File.ReadAllLines(ftc.FilePath);
-                    await TranslateAsync(lines, "en", "ar", ftc);
+                    await TranslateAsync(lines, sourceLang, targetLang, ftc);
                     File.WriteAllLines(ftc.OutputFilePath, lines);
                     flowLayoutPanel1.Controls.Remove(ftc);
                 }
