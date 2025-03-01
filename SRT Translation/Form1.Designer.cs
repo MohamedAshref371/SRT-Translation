@@ -48,7 +48,7 @@
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedSingle;
             this.MaximizeBox = false;
             this.Name = "TranslationForm";
-            this.Text = "SRT Files Translation v1.3";
+            this.Text = "SRT Files Translation v1.4";
             this.Load += new System.EventHandler(this.TranslationForm_Load);
             this.ResumeLayout(false);
 
