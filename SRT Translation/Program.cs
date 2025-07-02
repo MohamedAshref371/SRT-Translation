@@ -21,7 +21,7 @@ namespace SRT_Translation
             var tempForm = new Form { WindowState = FormWindowState.Maximized, TopMost = true };
             bool isUdemy = MessageBox.Show(tempForm, "إضغط 'نعم' إذا كانت ملفات الترجمة من udemy", "Udemy ?", MessageBoxButtons.YesNo, MessageBoxIcon.Question, MessageBoxDefaultButton.Button2, MessageBoxOptions.RtlReading) == DialogResult.Yes;
             bool to_ar = MessageBox.Show(tempForm, "إضغط 'نعم' إذا اردت الترجمة إلى العربية و'لا' للإنجليزية ", "الترجمة إلى ؟", MessageBoxButtons.YesNo, MessageBoxIcon.Question, MessageBoxDefaultButton.Button1, MessageBoxOptions.RtlReading) == DialogResult.Yes;
-            bool overload = MessageBox.Show(tempForm, "إضغط 'نعم' إذا اردت الكتابة فوق الملف الأصلي لو كانت اللغة ليست في اسم الملف ", "الترجمة إلى ؟", MessageBoxButtons.YesNo, MessageBoxIcon.Question, MessageBoxDefaultButton.Button2, MessageBoxOptions.RtlReading) == DialogResult.Yes;
+            bool overwrite = MessageBox.Show(tempForm, "إضغط 'نعم' إذا اردت الكتابة فوق الملف الأصلي لو كانت اللغة ليست في اسم الملف ", "الترجمة إلى ؟", MessageBoxButtons.YesNo, MessageBoxIcon.Question, MessageBoxDefaultButton.Button2, MessageBoxOptions.RtlReading) == DialogResult.Yes;
 
             FolderBrowserDialog fbd = new FolderBrowserDialog
             {
@@ -31,7 +31,7 @@ namespace SRT_Translation
             if (fbd.ShowDialog(tempForm) != DialogResult.OK) return;
             tempForm.Dispose();
 
-            var tf = new TranslationForm { IsUdemy = isUdemy, OverLoad = overload };
+            var tf = new TranslationForm { IsUdemy = isUdemy, OverWrite = overwrite };
             if (isUdemy)
                 tf.Mp4Files = Directory.GetFiles(fbd.SelectedPath, "*.mp4", SearchOption.AllDirectories);
             else
