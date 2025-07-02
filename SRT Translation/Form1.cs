@@ -14,6 +14,7 @@ namespace SRT_Translation
         string sourceLang = "en", targetLang = "ar";
         string sourceLangText = "English", targetLangText = "Arabic";
         public bool IsUdemy;
+        public bool OverLoad;
 
         public TranslationForm() => InitializeComponent();
 
@@ -34,7 +35,10 @@ namespace SRT_Translation
                 else if (EndsWith(s, sourceLangText))
                     output = s.Substring(0, s.Length - 11) + targetLangText + ".srt";
                 else if (!EndsWith(s, targetLang) && !EndsWith(s, targetLangText))
-                    output = $"{s.Substring(0, s.Length - 4)}_{targetLang}.srt";
+                {
+                    output = OverLoad ? "" : "_" + targetLang;
+                    output = $"{s.Substring(0, s.Length - 4)}{output}.srt";
+                }
                 else
                     continue;
 
@@ -59,7 +63,10 @@ namespace SRT_Translation
                 {
                     input = s.Substring(0, s.Length - 4) + ".srt";
                     if (File.Exists(input))
-                        output = $"{input.Substring(0, input.Length - 4)}_{targetLang}.srt";
+                    {
+                        output = OverLoad ? "" : "_" + targetLang;
+                        output = $"{input.Substring(0, input.Length - 4)}{output}.srt";
+                    }
                     else
                         continue;
                 }
