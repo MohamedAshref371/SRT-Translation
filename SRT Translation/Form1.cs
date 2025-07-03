@@ -142,11 +142,13 @@ namespace SRT_Translation
                 }
                 if (collection.Length > 3000 || i == text.Length - 1)
                 {
-                    lines = await Translator.TranslateAsync(collection.ToString(), sourceLang, targetLang);
-                    if (lines.Length >= indexes.Count)
-                        for (int j = 0; j < indexes.Count; j++)
-                            text[indexes[j]] = lines[j];
-                    
+                    if (collection.Length > 0)
+                    {
+                        lines = await Translator.TranslateAsync(collection.ToString(), sourceLang, targetLang);
+                        if (lines.Length >= indexes.Count)
+                            for (int j = 0; j < indexes.Count; j++)
+                                text[indexes[j]] = lines[j];
+                    }
                     indexes.Clear(); collection.Clear();
                     if (ftc != null) ftc.PrecentText = i;
                 }
